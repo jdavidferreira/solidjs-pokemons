@@ -1,0 +1,7 @@
+{
+  // This tells VS Code to always open .css files in Tailwind CSS mode
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.classAttributes": ["class", "className", "classList"]
+}
