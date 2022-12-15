@@ -26,7 +26,7 @@ const fetchPokemonDetails = async ({
 }
 
 export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
-  const [areDetailsLoaded, setAreDetailsLoader] = createSignal(false)
+  const [areDetailsLoaded, setAreDetailsLoaded] = createSignal(false)
   const [details, { refetch }] = createResource(
     () => ({ name: props.name, shouldLoad: areDetailsLoaded() }),
     fetchPokemonDetails
@@ -34,7 +34,7 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
 
   const handleLoadMoreDetails = async () => {
     if (!areDetailsLoaded()) {
-      setAreDetailsLoader(true)
+      setAreDetailsLoaded(true)
       refetch()
     }
   }
