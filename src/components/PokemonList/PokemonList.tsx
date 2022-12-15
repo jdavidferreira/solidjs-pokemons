@@ -2,7 +2,6 @@ import { Component, createResource, For, Suspense } from 'solid-js'
 import { PokemonListItem } from '../PokemonListItem/PokemonListItem'
 import { PokemonListItemProps } from '../PokemonListItem/PokemonListItem.types'
 import { Loader } from '../UI/Loader/Loader'
-import { PokemonListProps } from './PokemonList.types'
 
 const fetchPokemons = async () => {
   // await new Promise((r) => setTimeout(r, 1000))
@@ -11,7 +10,7 @@ const fetchPokemons = async () => {
   return json.results
 }
 
-export const PokemonList: Component<PokemonListProps> = () => {
+export const PokemonList: Component = () => {
   const [pokemons] = createResource<PokemonListItemProps[]>(fetchPokemons)
 
   return (
