@@ -4,10 +4,23 @@ import { PokemonListItemProps } from '../PokemonListItem/PokemonListItem.types'
 import { Loader } from '../UI/Loader/Loader'
 
 const fetchPokemons = async () => {
-  // await new Promise((r) => setTimeout(r, 1000))
+  await new Promise((r) => setTimeout(r, 1000))
   const result = await fetch(`https://pokeapi.co/api/v2/pokemon`)
   const json = await result.json()
-  return json.results
+
+  const mapped = (json.results as PokemonListItemProps[]).map((item) => {
+    return {
+      ...item,
+      id: Number(
+        item.url.substring(
+          item.url.search(/\/(\d)+\//) + 1,
+          item.url.length - 1
+        )
+      ),
+    }
+  })
+
+  return mapped
 }
 
 export const PokemonList: Component = () => {
@@ -15,10 +28,10 @@ export const PokemonList: Component = () => {
 
   return (
     <Suspense fallback={<Loader />}>
-      <ul class="flex flex-col gap-2 p-2">
+      <ul class="flex flex-col gap-2">
         <For each={pokemons()}>
           {(pokemon) => {
-            return <PokemonListItem name={pokemon.name} url={pokemon.url} />
+            return <PokemonListItem {...pokemon} />
           }}
         </For>
       </ul>

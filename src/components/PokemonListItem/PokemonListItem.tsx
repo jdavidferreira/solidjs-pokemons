@@ -27,7 +27,7 @@ const fetchPokemonDetails = async ({
 
 export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
   const [areDetailsLoaded, setAreDetailsLoaded] = createSignal(false)
-  const [details, { refetch }] = createResource(
+  const [details] = createResource(
     () => ({ name: props.name, shouldLoad: areDetailsLoaded() }),
     fetchPokemonDetails
   )
@@ -35,17 +35,26 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
   const handleLoadMoreDetails = async () => {
     if (!areDetailsLoaded()) {
       setAreDetailsLoaded(true)
-      refetch()
     }
   }
 
   return (
-    <li class="flex flex-col shadow-sm hover:shadow hover:bg-slate-100/50">
-      <div class="flex flex-row p-3 justify-between items-center text-sm">
-        <div class="capitalize">{props.name}</div>
+    <li class="flex flex-col shadow hover:shadow-md hover:bg-slate-100/50 border">
+      <div class="flex flex-row p-3 justify-start items-center gap-6 text-sm text-left">
+        <img
+          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${props.id}.svg`}
+          alt={`${props.name} sprite`}
+          loading="lazy"
+          class="h-12 w-12"
+        />
+        <div class="capitalize flex-grow">{props.name}</div>
         <Suspense fallback={<Loader />}>
           <Show when={!details()}>
-            <button type="button" onClick={handleLoadMoreDetails}>
+            <button
+              type="button"
+              onClick={handleLoadMoreDetails}
+              class="underline"
+            >
               Load more details
             </button>
           </Show>
