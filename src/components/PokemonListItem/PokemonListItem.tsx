@@ -63,8 +63,25 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
 
       <Suspense>
         <Show when={details()}>
-          <div class="flex flex-col justify-center items-center">
-            <img src={details().sprites.front_default} width={96} height={96} />
+          <div class="p-3">
+            <table class="table-auto w-full bordershadow-sm text-xs">
+              <thead>
+                <tr>
+                  <th class="border">HP</th>
+                  <th class="border">Attack</th>
+                  <th class="border">Defense</th>
+                  <th class="border">Speed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border">-</td>
+                  <td class="border">-</td>
+                  <td class="border">-</td>
+                  <td class="border">-</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </Show>
       </Suspense>
