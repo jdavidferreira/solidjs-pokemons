@@ -8,10 +8,13 @@ const fetchPokemons = async () => {
   const result = await fetch(`https://pokeapi.co/api/v2/pokemon`)
   const json = await result.json()
 
-  const mapped = (json.results as PokemonListItemProps[]).map((item) => {
+  const mapped: PokemonListItemProps[] = (
+    json.results as PokemonListItemProps[]
+  ).map((item) => {
     return {
       ...item,
       id: Number(
+        // extract the 'id' from the 'url'
         item.url.substring(
           item.url.search(/\/(\d)+\//) + 1,
           item.url.length - 1
@@ -24,7 +27,7 @@ const fetchPokemons = async () => {
 }
 
 export const PokemonList: Component = () => {
-  const [pokemons] = createResource<PokemonListItemProps[]>(fetchPokemons)
+  const [pokemons] = createResource(fetchPokemons)
 
   return (
     <Suspense fallback={<Loader />}>

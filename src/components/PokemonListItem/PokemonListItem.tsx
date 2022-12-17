@@ -6,7 +6,7 @@ import {
   Suspense,
 } from 'solid-js'
 import { Loader } from '../UI/Loader/Loader'
-import { PokemonListItemProps } from './PokemonListItem.types'
+import { PokemonDetails, PokemonListItemProps } from './PokemonListItem.types'
 
 const fetchPokemonDetails = async ({
   name,
@@ -22,7 +22,7 @@ const fetchPokemonDetails = async ({
   await new Promise((r) => setTimeout(r, 1000))
   const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
   const json = await result.json()
-  return json
+  return json as PokemonDetails
 }
 
 export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
