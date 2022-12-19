@@ -1,5 +1,7 @@
+import { Dictionary } from 'lodash'
 import {
   Component,
+  createMemo,
   createResource,
   createSignal,
   Show,
@@ -32,11 +34,27 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
     fetchPokemonDetails
   )
 
+  const statsMap = () => {
+    return details()?.stats.reduce<Dictionary<number>>((obj, stat) => {
+      obj[stat.stat.name] = stat.base_stat
+      return obj
+    }, {})
+  }
+  // TODO: find out why using a memo triggers the suspense fallback for the whole list
+  // const statsMap = createMemo(() => {
+  //   return details()?.stats.reduce<Dictionary<number>>((obj, stat) => {
+  //     obj[stat.stat.name] = stat.base_stat
+  //     return obj
+  //   }, {})
+  // })
+
   const handleLoadMoreDetails = async () => {
     if (!areDetailsLoaded()) {
       setAreDetailsLoaded(true)
     }
   }
+
+  const statsToShow = ['hp', 'attack', 'defense', 'speed']
 
   return (
     <li class="flex flex-col shadow hover:shadow-md hover:bg-slate-100/50 border">
@@ -64,21 +82,23 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
       <Suspense>
         <Show when={details()}>
           <div class="p-3">
-            <table class="table-auto w-full bordershadow-sm text-xs">
+            <table class="table-fixed w-full bordershadow-sm text-xs">
               <thead>
                 <tr>
-                  <th class="border">HP</th>
-                  <th class="border">Attack</th>
-                  <th class="border">Defense</th>
-                  <th class="border">Speed</th>
+                  {statsToShow.map((stat, index) => (
+                    <th data-index={index} class="border capitalize text-right">
+                      {stat}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="border">-</td>
-                  <td class="border">-</td>
-                  <td class="border">-</td>
-                  <td class="border">-</td>
+                  {statsToShow.map((stat, index) => (
+                    <td data-index={index} class="border text-right">
+                      {statsMap()?.[stat]}
+                    </td>
+                  ))}
                 </tr>
               </tbody>
             </table>
