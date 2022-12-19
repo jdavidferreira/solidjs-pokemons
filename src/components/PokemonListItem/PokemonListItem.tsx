@@ -1,7 +1,5 @@
-import { Dictionary } from 'lodash'
 import {
   Component,
-  createMemo,
   createResource,
   createSignal,
   Show,
@@ -9,6 +7,7 @@ import {
 } from 'solid-js'
 import { Loader } from '../UI/Loader/Loader'
 import { PokemonDetails, PokemonListItemProps } from './PokemonListItem.types'
+import { PokemonListItemDetails } from './PokemonListItemDetails'
 
 const fetchPokemonDetails = async ({
   name,
@@ -34,27 +33,11 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
     fetchPokemonDetails
   )
 
-  const statsMap = () => {
-    return details()?.stats.reduce<Dictionary<number>>((obj, stat) => {
-      obj[stat.stat.name] = stat.base_stat
-      return obj
-    }, {})
-  }
-  // TODO: find out why using a memo triggers the suspense fallback for the whole list
-  // const statsMap = createMemo(() => {
-  //   return details()?.stats.reduce<Dictionary<number>>((obj, stat) => {
-  //     obj[stat.stat.name] = stat.base_stat
-  //     return obj
-  //   }, {})
-  // })
-
   const handleLoadMoreDetails = async () => {
     if (!areDetailsLoaded()) {
       setAreDetailsLoaded(true)
     }
   }
-
-  const statsToShow = ['hp', 'attack', 'defense', 'speed']
 
   return (
     <li class="flex flex-col shadow hover:shadow-md hover:bg-slate-100/50 border">
@@ -80,59 +63,7 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
       </div>
 
       <Suspense>
-        <Show when={details()}>
-          <div class="flex flex-col gap-3 p-3">
-            <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
-              <thead>
-                <tr class="bg-slate-100">
-                  <th colSpan={2} class="border text-center">
-                    Types
-                  </th>
-                </tr>
-                <tr>
-                  <th class="border capitalize">Primary</th>
-                  <th class="border capitaliz">Secondary</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="border capitalize text-left">
-                    {details()?.types[0].type.name}
-                  </td>
-                  <td class="border capitalize text-left">
-                    {details()?.types[1]?.type.name || '-'}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
-              <thead>
-                <tr class="bg-slate-100">
-                  <th colSpan={statsToShow.length} class="border text-center">
-                    Stats
-                  </th>
-                </tr>
-                <tr>
-                  {statsToShow.map((stat, index) => (
-                    <th data-index={index} class="border capitalize text-right">
-                      {stat}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  {statsToShow.map((stat, index) => (
-                    <td data-index={index} class="border text-right">
-                      {statsMap()?.[stat]}
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </Show>
+        <PokemonListItemDetails details={details()} />
       </Suspense>
     </li>
   )
