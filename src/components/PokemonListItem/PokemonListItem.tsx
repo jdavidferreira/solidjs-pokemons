@@ -81,9 +81,38 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
 
       <Suspense>
         <Show when={details()}>
-          <div class="p-3">
-            <table class="table-fixed w-full bordershadow-sm text-xs">
+          <div class="flex flex-col gap-3 p-3">
+            <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
               <thead>
+                <tr class="bg-slate-100">
+                  <th colSpan={2} class="border text-center">
+                    Types
+                  </th>
+                </tr>
+                <tr>
+                  <th class="border capitalize">Primary</th>
+                  <th class="border capitaliz">Secondary</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border capitalize text-left">
+                    {details()?.types[0].type.name}
+                  </td>
+                  <td class="border capitalize text-left">
+                    {details()?.types[1]?.type.name || '-'}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
+              <thead>
+                <tr class="bg-slate-100">
+                  <th colSpan={statsToShow.length} class="border text-center">
+                    Stats
+                  </th>
+                </tr>
                 <tr>
                   {statsToShow.map((stat, index) => (
                     <th data-index={index} class="border capitalize text-right">
