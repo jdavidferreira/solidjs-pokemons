@@ -5,7 +5,7 @@ import { PokemonList } from './components/PokemonList/PokemonList'
 const App: Component = () => {
   return (
     <div class="flex w-full justify-center">
-      <div class="xl:w-[600px] p-4">
+      <div class="lg:w-[600px] p-4">
         <PokemonList />
       </div>
     </div>
