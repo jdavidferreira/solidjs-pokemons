@@ -12,11 +12,12 @@ export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
     }, {})
   })
 
-  const typesTitles = ['Primary', 'Secondary']
-  const typesNames = [
+  const typesNames = () => [
     props.details?.types[0].type.name,
     props.details?.types[1]?.type.name,
   ]
+
+  const typesTitles = ['Primary', 'Secondary']
   const statsToShow = ['hp', 'attack', 'defense', 'speed']
 
   return (
@@ -42,7 +43,7 @@ export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
           </thead>
           <tbody>
             <tr>
-              {typesNames.map((type, index) => (
+              {typesNames().map((type, index) => (
                 <td data-index={index} class="border capitalize text-center">
                   {type || '-'}
                 </td>
