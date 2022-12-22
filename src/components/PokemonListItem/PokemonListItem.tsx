@@ -28,6 +28,7 @@ const fetchPokemonDetails = async ({
 
 export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
   const [areDetailsLoaded, setAreDetailsLoaded] = createSignal(false)
+  const [expanded, setExpanded] = createSignal(true)
   const [details] = createResource(
     () => ({ name: props.name, shouldLoad: areDetailsLoaded() }),
     fetchPokemonDetails
@@ -37,6 +38,10 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
     if (!areDetailsLoaded()) {
       setAreDetailsLoaded(true)
     }
+  }
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded())
   }
 
   return (
@@ -50,20 +55,47 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
         />
         <div class="capitalize flex-grow">{props.name}</div>
         <Suspense fallback={<Loader />}>
-          <Show when={!details()}>
+          <Show
+            when={details()}
+            fallback={
+              <button
+                type="button"
+                onClick={handleLoadMoreDetails}
+                class="underline"
+              >
+                Load more details
+              </button>
+            }
+          >
             <button
               type="button"
-              onClick={handleLoadMoreDetails}
-              class="underline"
+              onClick={toggleExpanded}
+              class="hover:bg-slate-100 mr-2"
             >
-              Load more details
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="w-5 h-5"
+                classList={{
+                  'rotate-180': expanded(),
+                }}
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                  clip-rule="evenodd"
+                />
+              </svg>
             </button>
           </Show>
         </Suspense>
       </div>
 
       <Suspense>
-        <PokemonListItemDetails details={details()} />
+        <Show when={details() && expanded()}>
+          <PokemonListItemDetails details={details()} />
+        </Show>
       </Suspense>
     </li>
   )

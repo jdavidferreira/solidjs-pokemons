@@ -2,9 +2,9 @@ import { Component } from 'solid-js'
 
 export const Loader: Component = () => {
   return (
-    <div role="status" class="flex justify-center">
+    <div role="status" class="flex justify-center mr-2 ">
       <svg
-        class="inline mr-2 w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
