@@ -94,7 +94,7 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
 
       <Suspense>
         <Show when={details()}>
-          <PokemonListItemDetails details={details()} expanded={expanded()} />
+          <PokemonListItemDetails details={details()!} expanded={expanded()} />
         </Show>
       </Suspense>
     </li>

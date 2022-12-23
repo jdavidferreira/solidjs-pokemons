@@ -1,7 +1,12 @@
+import { useParams } from '@solidjs/router'
 import { VoidComponent } from 'solid-js'
 
 const PokemonDetailsPage: VoidComponent = () => {
-  return <div>Pokemon Details</div>
+  const params = useParams()
+
+  const { pokemonName } = params
+
+  return <div>Pokemon Details {pokemonName}</div>
 }
 
 export default PokemonDetailsPage

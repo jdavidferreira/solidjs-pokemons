@@ -1,20 +1,21 @@
 import { Dictionary } from 'lodash'
 import { Component, createMemo } from 'solid-js'
+import { A } from '@solidjs/router'
 import { PokemonListItemDetailsProps } from './PokemonListItemDetails.types'
 
 export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
   props
 ) => {
   const statsMap = createMemo(() => {
-    return props.details?.stats.reduce<Dictionary<number>>((obj, stat) => {
+    return props.details.stats.reduce<Dictionary<number>>((obj, stat) => {
       obj[stat.stat.name] = stat.base_stat
       return obj
     }, {})
   })
 
   const typesNames = () => [
-    props.details?.types[0].type.name,
-    props.details?.types[1]?.type.name,
+    props.details.types[0].type.name,
+    props.details.types[1]?.type.name,
   ]
 
   const typesTitles = ['Primary', 'Secondary']
@@ -82,6 +83,13 @@ export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
           </tr>
         </tbody>
       </table>
+
+      <A
+        href={`${props.details.name}`}
+        class="text-sm underline ml-auto text-slate-700"
+      >
+        View more
+      </A>
     </div>
   )
 }

@@ -21,6 +21,7 @@ type PokemonStat = {
 }
 
 export type PokemonDetails = {
+  name: string
   types: PokemonType[]
   stats: PokemonStat[]
 }

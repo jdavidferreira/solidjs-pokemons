@@ -9,7 +9,7 @@ const App: Component = () => {
     <div class="flex w-full justify-center p-4">
       <Routes>
         <Route path="/" component={PokemonListPage} />
-        <Route path="/:id" component={PokemonDetailsPage} />
+        <Route path="/:pokemonName" component={PokemonDetailsPage} />
       </Routes>
     </div>
   )
