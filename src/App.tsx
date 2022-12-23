@@ -1,13 +1,16 @@
-import { Component } from 'solid-js'
+import { Component, lazy } from 'solid-js'
+import { Routes, Route } from '@solidjs/router'
 
-import { PokemonList } from './components/PokemonList/PokemonList'
+const PokemonListPage = lazy(() => import('./pages/PokemonListPage'))
+const PokemonDetailsPage = lazy(() => import('./pages/PokemonDetailsPage'))
 
 const App: Component = () => {
   return (
-    <div class="flex w-full justify-center">
-      <div class="lg:w-[600px] p-4">
-        <PokemonList />
-      </div>
+    <div class="flex w-full justify-center p-4">
+      <Routes>
+        <Route path="/" component={PokemonListPage} />
+        <Route path="/:id" component={PokemonDetailsPage} />
+      </Routes>
     </div>
   )
 }
