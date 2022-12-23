@@ -1,5 +1,5 @@
 import { Dictionary } from 'lodash'
-import { Component, createMemo, Show } from 'solid-js'
+import { Component, createMemo } from 'solid-js'
 import { PokemonListItemDetailsProps } from './PokemonListItemDetails.types'
 
 export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
@@ -21,66 +21,67 @@ export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
   const statsToShow = ['hp', 'attack', 'defense', 'speed']
 
   return (
-    <Show when={props.details}>
-      <div class="flex flex-col gap-3 p-3">
-        <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
-          <thead>
-            <tr class="bg-slate-100">
-              <th colSpan={2} class="border text-center">
-                Types
+    <div
+      class="flex flex-col gap-3 p-3"
+      classList={{ hidden: !props.expanded }}
+    >
+      <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
+        <thead>
+          <tr class="bg-slate-100">
+            <th colSpan={2} class="border text-center">
+              Types
+            </th>
+          </tr>
+          <tr>
+            {typesTitles.map((typeTitle, index) => (
+              <th
+                data-index={index}
+                class="border capitalize text-center bg-slate-50"
+              >
+                {typeTitle}
               </th>
-            </tr>
-            <tr>
-              {typesTitles.map((typeTitle, index) => (
-                <th
-                  data-index={index}
-                  class="border capitalize text-center bg-slate-50"
-                >
-                  {typeTitle}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {typesNames().map((type, index) => (
-                <td data-index={index} class="border capitalize text-center">
-                  {type || '-'}
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {typesNames().map((type, index) => (
+              <td data-index={index} class="border capitalize text-center">
+                {type || '-'}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
 
-        <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
-          <thead>
-            <tr class="bg-slate-100">
-              <th colSpan={statsToShow.length} class="border text-center">
-                Stats
+      <table class="table-fixed w-full bordershadow-sm text-xs bg-white">
+        <thead>
+          <tr class="bg-slate-100">
+            <th colSpan={statsToShow.length} class="border text-center">
+              Stats
+            </th>
+          </tr>
+          <tr>
+            {statsToShow.map((stat, index) => (
+              <th
+                data-index={index}
+                class="border capitalize text-center bg-slate-50"
+              >
+                {stat}
               </th>
-            </tr>
-            <tr>
-              {statsToShow.map((stat, index) => (
-                <th
-                  data-index={index}
-                  class="border capitalize text-center bg-slate-50"
-                >
-                  {stat}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {statsToShow.map((stat, index) => (
-                <td data-index={index} class="border text-center">
-                  {statsMap()?.[stat]}
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </Show>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {statsToShow.map((stat, index) => (
+              <td data-index={index} class="border text-center">
+                {statsMap()?.[stat]}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    </div>
   )
 }

@@ -93,8 +93,8 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
       </div>
 
       <Suspense>
-        <Show when={details() && expanded()}>
-          <PokemonListItemDetails details={details()} />
+        <Show when={details()}>
+          <PokemonListItemDetails details={details()} expanded={expanded()} />
         </Show>
       </Suspense>
     </li>
