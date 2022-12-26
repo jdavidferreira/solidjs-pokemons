@@ -1,7 +1,8 @@
-export type PokemonListItemProps = {
-  id: number
-  name: string
-  url: string
+import { Ref } from 'solid-js'
+import { PokemonListItem } from '../../lib/api.types'
+
+export type PokemonListItemProps = PokemonListItem & {
+  ref?: Ref<HTMLLIElement>
 }
 
 type PokemonType = {

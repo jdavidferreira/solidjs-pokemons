@@ -45,10 +45,13 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
   }
 
   return (
-    <li class="flex flex-col shadow hover:shadow-md hover:bg-slate-100/50 border">
+    <li
+      ref={props.ref}
+      class="flex flex-col shadow hover:shadow-md hover:bg-slate-100/50 border"
+    >
       <div class="flex flex-row p-3 justify-start items-center gap-6 text-sm text-left">
         <img
-          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${props.id}.svg`}
+          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${props._id}.svg`}
           alt={`${props.name} sprite`}
           loading="lazy"
           class="h-12 w-12"
