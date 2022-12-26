@@ -1,43 +1,100 @@
-import { Component, createResource, For, Suspense } from 'solid-js'
+import { Component, createEffect, createSignal, For, on, Show } from 'solid-js'
+import { fetchPokemons } from '../../lib/api'
 import { PokemonListItem } from '../PokemonListItem/PokemonListItem'
-import { PokemonListItemProps } from '../PokemonListItem/PokemonListItem.types'
 import { Loader } from '../UI/Loader/Loader'
 
-const fetchPokemons = async () => {
-  await new Promise((r) => setTimeout(r, 1000))
-  const result = await fetch(`https://pokeapi.co/api/v2/pokemon`)
-  const json = await result.json()
+export const PokemonList: Component = () => {
+  const [page, setPage] = createSignal(0)
+  const [pokemons, setPokemons] = createSignal<Awaited<
+    ReturnType<typeof fetchPokemons>
+  > | null>(null)
+  const [status, setStatus] = createSignal<
+    'loading' | 'fetching' | 'error' | 'success'
+  >('loading')
+  const [lastItemEl, setLastItemEl] = createSignal<HTMLLIElement>()
 
-  const mapped: PokemonListItemProps[] = (
-    json.results as PokemonListItemProps[]
-  ).map((item) => {
-    return {
-      ...item,
-      id: Number(
-        // extract the 'id' from the 'url'
-        item.url.substring(
-          item.url.search(/\/(\d)+\//) + 1,
-          item.url.length - 1
-        )
-      ),
+  const moveToNextPage = () => setPage(page() + 1)
+
+  const observer = new IntersectionObserver((entries) => {
+    const [entry] = entries
+
+    if (!entry.isIntersecting) {
+      return
+    }
+
+    const _pokemons = pokemons()
+
+    if (!_pokemons) {
+      return
+    }
+
+    const isLoadingOrFetching = ['loading', 'fetching'].includes(status())
+    const areThereMoreItems = _pokemons.results.length < _pokemons.count
+
+    if (!isLoadingOrFetching && areThereMoreItems) {
+      moveToNextPage()
     }
   })
 
-  return mapped
-}
+  createEffect(
+    on(page, async (page) => {
+      try {
+        setStatus(pokemons() ? 'fetching' : 'loading')
+        const limit = 20
 
-export const PokemonList: Component = () => {
-  const [pokemons] = createResource(fetchPokemons)
+        const res = await fetchPokemons({ limit, offset: page * limit })
+
+        if (pokemons()) {
+          setPokemons({
+            ...res,
+            results: [...(pokemons()?.results || []), ...res.results],
+          })
+        } else {
+          setPokemons(res)
+        }
+
+        setStatus('success')
+      } catch (error) {
+        setStatus('error')
+      }
+    })
+  )
+
+  createEffect(
+    on(lastItemEl, (lastItemEl, prevLastItemEl) => {
+      if (prevLastItemEl) {
+        observer.unobserve(prevLastItemEl)
+      }
+
+      if (lastItemEl) {
+        observer.observe(lastItemEl)
+      }
+    })
+  )
 
   return (
-    <Suspense fallback={<Loader />}>
+    <Show when={pokemons()} fallback={<Loader />}>
       <ul class="flex flex-col gap-2">
-        <For each={pokemons()}>
-          {(pokemon) => {
-            return <PokemonListItem {...pokemon} />
+        <For each={pokemons()!.results}>
+          {(pokemon, i) => {
+            const isLastItem = () => i() === pokemons()!.results.length - 1
+
+            return (
+              <PokemonListItem
+                {...pokemon}
+                ref={(el) => {
+                  if (isLastItem()) {
+                    setLastItemEl(el)
+                  }
+                }}
+              />
+            )
           }}
         </For>
+        <Show when={status() === 'fetching'}>
+          <Loader />
+        </Show>
       </ul>
-    </Suspense>
+    </Show>
   )
 }
