@@ -1,7 +1,7 @@
 import { Component, createEffect, createSignal, For, on, Show } from 'solid-js'
-import { fetchPokemons } from '../../lib/api'
+import { fetchPokemons } from 'src/lib/api'
 import { PokemonListItem } from '../PokemonListItem/PokemonListItem'
-import { Loader } from '../UI/Loader/Loader'
+import { Loader } from 'src/components/UI/Loader/Loader'
 
 export const PokemonList: Component = () => {
   const [page, setPage] = createSignal(0)

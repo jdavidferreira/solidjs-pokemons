@@ -1,5 +1,5 @@
 import { Ref } from 'solid-js'
-import { PokemonListItem } from '../../lib/api.types'
+import { PokemonListItem } from 'src/lib/api.types'
 
 export type PokemonListItemProps = PokemonListItem & {
   ref?: Ref<HTMLLIElement>

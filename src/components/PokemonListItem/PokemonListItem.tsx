@@ -5,7 +5,7 @@ import {
   Show,
   Suspense,
 } from 'solid-js'
-import { Loader } from '../UI/Loader/Loader'
+import { Loader } from 'src/components/UI/Loader/Loader'
 import { PokemonDetails, PokemonListItemProps } from './PokemonListItem.types'
 import { PokemonListItemDetails } from './PokemonListItemDetails'
 

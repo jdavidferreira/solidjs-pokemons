@@ -1,5 +1,6 @@
-import { defineConfig } from 'vite';
-import solidPlugin from 'vite-plugin-solid';
+import path from 'node:path'
+import { defineConfig } from 'vite'
+import solidPlugin from 'vite-plugin-solid'
 
 export default defineConfig({
   plugins: [solidPlugin()],
@@ -9,4 +10,12 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
-});
+  resolve: {
+    alias: [
+      {
+        find: 'src',
+        replacement: path.resolve('src/'),
+      },
+    ],
+  },
+})
