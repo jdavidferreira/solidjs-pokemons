@@ -1,8 +1,9 @@
-import { Component } from 'solid-js'
+import { VoidComponent } from 'solid-js'
+import { LoaderProps } from './Loader.types'
 
-export const Loader: Component = () => {
+export const Loader: VoidComponent<LoaderProps> = (props) => {
   return (
-    <div role="status" class="flex justify-center mr-2 ">
+    <div role="status" class={`flex justify-center mr-2 ${props.class}`}>
       <svg
         class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
         viewBox="0 0 100 101"

@@ -73,28 +73,30 @@ export const PokemonList: Component = () => {
   )
 
   return (
-    <Show when={pokemons()} fallback={<Loader />}>
-      <ul class="flex flex-col gap-2">
-        <For each={pokemons()!.results}>
-          {(pokemon, i) => {
-            const isLastItem = () => i() === pokemons()!.results.length - 1
+    <>
+      <Show when={pokemons()}>
+        <ul class="flex flex-col gap-2">
+          <For each={pokemons()!.results}>
+            {(pokemon, i) => {
+              const isLastItem = () => i() === pokemons()!.results.length - 1
 
-            return (
-              <PokemonListItem
-                {...pokemon}
-                ref={(el) => {
-                  if (isLastItem()) {
-                    setLastItemEl(el)
-                  }
-                }}
-              />
-            )
-          }}
-        </For>
-        <Show when={status() === 'fetching'}>
-          <Loader />
-        </Show>
-      </ul>
-    </Show>
+              return (
+                <PokemonListItem
+                  {...pokemon}
+                  ref={(el) => {
+                    if (isLastItem()) {
+                      setLastItemEl(el)
+                    }
+                  }}
+                />
+              )
+            }}
+          </For>
+        </ul>
+      </Show>
+      <Show when={['loading', 'fetching'].includes(status())}>
+        <Loader class="mt-2" />
+      </Show>
+    </>
   )
 }
