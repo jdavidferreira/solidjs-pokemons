@@ -6,7 +6,9 @@ const PokemonDetailsPage: VoidComponent = () => {
 
   const { pokemonName } = params
 
-  return <div>Pokemon Details {pokemonName}</div>
+  return (
+    <div class="flex w-full justify-center">Pokemon Details {pokemonName}</div>
+  )
 }
 
 export default PokemonDetailsPage

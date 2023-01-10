@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@solidjs/router': ^0.6.0
+  '@tanstack/solid-query': ^4.22.0
   '@types/lodash': ^4.14.191
   '@types/node': ^18.11.17
   autoprefixer: ^10.4.13
@@ -15,6 +16,7 @@ specifiers:
 
 dependencies:
   '@solidjs/router': 0.6.0_solid-js@1.6.6
+  '@tanstack/solid-query': 4.22.0_solid-js@1.6.6
   lodash: 4.17.21
   solid-js: 1.6.6
 
@@ -628,6 +630,19 @@ packages:
     peerDependencies:
       solid-js: ^1.5.3
     dependencies:
+      solid-js: 1.6.6
+    dev: false
+
+  /@tanstack/query-core/4.22.0:
+    resolution: {integrity: sha512-OeLyBKBQoT265f5G9biReijeP8mBxNFwY7ZUu1dKL+YzqpG5q5z7J/N1eT8aWyKuhyDTiUHuKm5l+oIVzbtrjw==}
+    dev: false
+
+  /@tanstack/solid-query/4.22.0_solid-js@1.6.6:
+    resolution: {integrity: sha512-xNS9tS1XGAY1CD2i6+Lo31wFbizMPPO+NfT3E1E8EFq4Y6t2ewrcEI43X7Wl9mKrntWfLLD75KvnK5LWDhpCiw==}
+    peerDependencies:
+      solid-js: ^1.5.7
+    dependencies:
+      '@tanstack/query-core': 4.22.0
       solid-js: 1.6.6
     dev: false
 
