@@ -1,64 +1,55 @@
-import { Component, createEffect, createSignal, For, on, Show } from 'solid-js'
+import {
+  VoidComponent,
+  createEffect,
+  createSignal,
+  For,
+  on,
+  Show,
+  Switch,
+  Match,
+} from 'solid-js'
+import { createInfiniteQuery } from '@tanstack/solid-query'
+
 import { fetchPokemons } from 'src/lib/api'
 import { PokemonListItem } from '../PokemonListItem/PokemonListItem'
 import { Loader } from 'src/components/UI/Loader/Loader'
 
-export const PokemonList: Component = () => {
-  const [page, setPage] = createSignal(0)
-  const [pokemons, setPokemons] = createSignal<Awaited<
-    ReturnType<typeof fetchPokemons>
-  > | null>(null)
-  const [status, setStatus] = createSignal<
-    'loading' | 'fetching' | 'error' | 'success'
-  >('loading')
-  const [lastItemEl, setLastItemEl] = createSignal<HTMLLIElement>()
+const PAGE_ITEMS = 20
 
-  const moveToNextPage = () => setPage(page() + 1)
+export const PokemonList: VoidComponent = () => {
+  const [lastItemEl, setLastItemEl] = createSignal<HTMLLIElement>()
+  const query = createInfiniteQuery({
+    queryKey: () => ['pokemons'],
+    queryFn: ({ pageParam }) => {
+      return fetchPokemons({
+        offset: pageParam?.offset || 0,
+        limit: PAGE_ITEMS,
+      })
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage.next) {
+        // return undefined to specify that there are no more pages
+        return undefined
+      }
+
+      return { offset: pages.length * PAGE_ITEMS }
+    },
+  })
 
   const observer = new IntersectionObserver((entries) => {
     const [entry] = entries
 
-    if (!entry.isIntersecting) {
+    if (
+      !entry.isIntersecting ||
+      !query.isSuccess ||
+      !query.hasNextPage ||
+      query.isFetchingNextPage
+    ) {
       return
     }
 
-    const _pokemons = pokemons()
-
-    if (!_pokemons) {
-      return
-    }
-
-    const isLoadingOrFetching = ['loading', 'fetching'].includes(status())
-    const areThereMoreItems = _pokemons.results.length < _pokemons.count
-
-    if (!isLoadingOrFetching && areThereMoreItems) {
-      moveToNextPage()
-    }
+    query.fetchNextPage()
   })
-
-  createEffect(
-    on(page, async (page) => {
-      try {
-        setStatus(pokemons() ? 'fetching' : 'loading')
-        const limit = 20
-
-        const res = await fetchPokemons({ limit, offset: page * limit })
-
-        if (pokemons()) {
-          setPokemons({
-            ...res,
-            results: [...(pokemons()?.results || []), ...res.results],
-          })
-        } else {
-          setPokemons(res)
-        }
-
-        setStatus('success')
-      } catch (error) {
-        setStatus('error')
-      }
-    })
-  )
 
   createEffect(
     on(lastItemEl, (lastItemEl, prevLastItemEl) => {
@@ -72,29 +63,59 @@ export const PokemonList: Component = () => {
     })
   )
 
+  const resultsCount = () => {
+    if (!query.isSuccess) {
+      return 0
+    }
+
+    return query.data.pages.reduce((count, page) => {
+      return count + page.results.length
+    }, 0)
+  }
+
   return (
     <>
-      <Show when={pokemons()}>
+      <div class="sticky top-0 h-12 mb-2 p-3 flex items-center bg-white border-2 text-sm justify-between">
+        <p>Current items: {resultsCount()}</p>
+        <Show when={query.isSuccess && !query.hasNextPage}>
+          There are no more items.
+        </Show>
+        <Switch>
+          <Match when={query.isInitialLoading}>Loading first items...</Match>
+          <Match when={query.isFetchingNextPage}>Loading more...</Match>
+          <Match when={query.hasNextPage}>Can load more</Match>
+          <Match when={!query.hasNextPage}>Nothing more to load</Match>
+        </Switch>
+      </div>
+      <Show when={query.isSuccess}>
         <ul class="flex flex-col gap-2">
-          <For each={pokemons()!.results}>
-            {(pokemon, i) => {
-              const isLastItem = () => i() === pokemons()!.results.length - 1
+          <For each={query.data!.pages}>
+            {(page, i) => {
+              const isLastPage = () => i() === query.data!.pages.length - 1
 
               return (
-                <PokemonListItem
-                  {...pokemon}
-                  ref={(el) => {
-                    if (isLastItem()) {
-                      setLastItemEl(el)
-                    }
+                <For each={page.results}>
+                  {(pokemon, i) => {
+                    const isLastItem = () => i() === page.results.length - 1
+
+                    return (
+                      <PokemonListItem
+                        {...pokemon}
+                        ref={(el) => {
+                          if (isLastPage() && isLastItem()) {
+                            setLastItemEl(el)
+                          }
+                        }}
+                      />
+                    )
                   }}
-                />
+                </For>
               )
             }}
           </For>
         </ul>
       </Show>
-      <Show when={['loading', 'fetching'].includes(status())}>
+      <Show when={query.isLoading || query.isFetching}>
         <Loader class="mt-2" />
       </Show>
     </>
