@@ -57,7 +57,7 @@ export const PokemonListItem: Component<PokemonListItemProps> = (props) => {
           class="h-12 w-12"
         />
         <div class="capitalize flex-grow">{props.name}</div>
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<Loader class="mr-2" />}>
           <Show
             when={details()}
             fallback={

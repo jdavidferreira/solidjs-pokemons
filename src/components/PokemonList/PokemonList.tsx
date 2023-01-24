@@ -7,6 +7,7 @@ import {
   Show,
   Switch,
   Match,
+  createMemo,
 } from 'solid-js'
 import { createInfiniteQuery } from '@tanstack/solid-query'
 
@@ -63,10 +64,9 @@ export const PokemonList: VoidComponent = () => {
     })
   )
 
-  const resultsCount = () => {
-    if (!query.isSuccess) {
-      return 0
-    }
+  const allRows = createMemo(
+    () => query.data?.pages.flatMap((d) => d.results) || []
+  )
 
     return query.data.pages.reduce((count, page) => {
       return count + page.results.length
@@ -76,7 +76,7 @@ export const PokemonList: VoidComponent = () => {
   return (
     <>
       <div class="sticky top-0 h-12 mb-2 p-3 flex items-center bg-white border-2 text-sm justify-between">
-        <p>Current items: {resultsCount()}</p>
+        <p>Current items: {allRows().length}</p>
         <Show when={query.isSuccess && !query.hasNextPage}>
           There are no more items.
         </Show>
@@ -87,37 +87,29 @@ export const PokemonList: VoidComponent = () => {
           <Match when={!query.hasNextPage}>Nothing more to load</Match>
         </Switch>
       </div>
-      <Show when={query.isSuccess}>
-        <ul class="flex flex-col gap-2">
-          <For each={query.data!.pages}>
-            {(page, i) => {
-              const isLastPage = () => i() === query.data!.pages.length - 1
+      <ul class="flex flex-col gap-2">
+        <For each={allRows()}>
+          {(pokemon, i) => {
+            const isLastItem = () => i() === allRows().length - 1
 
-              return (
-                <For each={page.results}>
-                  {(pokemon, i) => {
-                    const isLastItem = () => i() === page.results.length - 1
-
-                    return (
-                      <PokemonListItem
-                        {...pokemon}
-                        ref={(el) => {
-                          if (isLastPage() && isLastItem()) {
-                            setLastItemEl(el)
-                          }
-                        }}
-                      />
-                    )
-                  }}
-                </For>
-              )
-            }}
-          </For>
-        </ul>
-      </Show>
-      <Show when={query.isLoading || query.isFetching}>
-        <Loader class="mt-2" />
-      </Show>
+            return (
+              <PokemonListItem
+                {...pokemon}
+                ref={(el) => {
+                  if (isLastItem()) {
+                    setLastItemEl(el)
+                  }
+                }}
+              />
+            )
+          }}
+        </For>
+        <Show when={query.isLoading || query.isFetching}>
+          <li>
+            <Loader />
+          </li>
+        </Show>
+      </ul>
     </>
   )
 }
