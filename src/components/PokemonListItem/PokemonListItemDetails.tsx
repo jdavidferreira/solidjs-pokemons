@@ -47,7 +47,11 @@ export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
         <tbody>
           <tr>
             {typesNames().map((type, index) => (
-              <td data-index={index} class="border capitalize text-center">
+              <td
+                data-index={index}
+                class="border capitalize text-center"
+                data-testid={`pokemon${typesTitles[index]}Type`}
+              >
                 {type || '-'}
               </td>
             ))}
@@ -76,7 +80,11 @@ export const PokemonListItemDetails: Component<PokemonListItemDetailsProps> = (
         <tbody>
           <tr>
             {statsToShow.map((stat, index) => (
-              <td data-index={index} class="border text-center">
+              <td
+                data-index={index}
+                class="border text-center"
+                data-testid={`pokemonStatValue-${stat}`}
+              >
                 {statsMap()?.[stat]}
               </td>
             ))}
