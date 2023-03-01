@@ -1,3 +1,6 @@
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
+
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
@@ -17,5 +20,14 @@ export default defineConfig({
         replacement: path.resolve('src/'),
       },
     ],
+    conditions: ['development', 'browser'],
+  },
+  test: {
+    environment: 'jsdom',
+    transformMode: { web: [/\.[jt]sx?$/] },
+    globals: true,
+    threads: false,
+    isolate: false,
+    setupFiles: ['node_modules/@testing-library/jest-dom/extend-expect.js'],
   },
 })

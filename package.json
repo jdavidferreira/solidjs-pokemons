@@ -6,13 +6,18 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "test": "vitest --reporter=verbose"
   },
   "license": "MIT",
   "devDependencies": {
+    "@solidjs/testing-library": "^0.6.1",
+    "@testing-library/jest-dom": "^5.16.5",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.14.2",
+    "@types/testing-library__jest-dom": "^5.14.5",
     "autoprefixer": "^10.4.13",
+    "jsdom": "^21.1.0",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7",
     "typescript": "^4.9.5",
@@ -23,6 +28,7 @@
     "@solidjs/router": "^0.7.0",
     "@tanstack/solid-query": "^4.24.10",
     "lodash": "^4.17.21",
-    "solid-js": "^1.6.11"
+    "solid-js": "^1.6.11",
+    "vitest": "^0.29.1"
   }
 }
